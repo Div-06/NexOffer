@@ -123,69 +123,55 @@ EMAIL_PASSWORD=
 EMAIL_FROM=NexOffer <noreply@nexoffer.com>
 ```
 
-> **Note on Zero-Config Demo:** If `GEMINI_API_KEY` or `MONGODB_URI` are not provided, NexOffer automatically activates its **Zero-Downtime Intelligent Engine and Hybrid Storage**, ensuring all 10 modules function 100% out of the box!
+## ⚙️ Configuration & Environment Variables
+
+Configure `server/src/main/resources/application.properties` (or set environment variables):
+
+```properties
+server.port=5000
+
+# PostgreSQL Configuration
+spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/nexoffer}
+spring.datasource.username=${DB_USERNAME:postgres}
+spring.datasource.password=${DB_PASSWORD:postgres}
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA & Hibernate
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+
+# LLM Gateway - Google Gemini API
+app.llm.gemini.api-key=${GEMINI_API_KEY:}
+app.llm.gemini.model=${GEMINI_MODEL:gemini-3.5-flash-lite}
+app.llm.gemini.endpoint=https://generativelanguage.googleapis.com/v1beta/models
+
+# JWT Secret
+app.jwt.secret=nexoffer_super_secret_jwt_key_2026_secure_key_must_be_long_enough_for_sha256
+app.jwt.expiration-ms=604800000
+```
 
 ---
 
 ## 🚀 Quick Start & Installation
 
-### 1. Clone & Install Dependencies
+### 1. Run the Java Spring Boot Backend
 
 ```bash
-# In the root NexOffer directory
-npm run install-all
-```
-
-Or install manually in each folder:
-
-```bash
-# Install server dependencies
 cd server
-npm install
-
-# Install client dependencies
-cd ../client
-npm install
+mvn spring-boot:run
 ```
+*Backend runs on `http://localhost:5000`.*
 
 ---
 
-### 2. Running the Application
-
-#### Option A: Run Backend & Frontend Concurrently (Root)
+### 2. Run the React Frontend Client
 
 ```bash
-# Run backend server (Port 5000)
-npm run server
-
-# In a new terminal, run frontend client (Port 5173)
-npm run client
-```
-
-#### Option B: Run individually
-
-```bash
-# Terminal 1: Backend
-cd server
-npm run dev
-
-# Terminal 2: Frontend
 cd client
+npm install
 npm run dev
 ```
-
-Open your browser at **`http://localhost:5173`** to access the web application.
-
----
-
-## 🧪 Automated Testing & Verification
-
-NexOffer includes an end-to-end test suite that verifies all 15 REST endpoints in sequence:
-
-```bash
-cd server
-node scripts/testEndpoints.js
-```
+*Frontend opens at `http://localhost:5173`.*
 
 ---
 
@@ -193,7 +179,7 @@ node scripts/testEndpoints.js
 
 ### Authentication (`/api/auth`)
 - `POST /api/auth/register` — Create account & trigger 6-digit OTP
-- `POST /api/auth/verify-otp` — Verify OTP & activate account
+- `POST /api/auth/verify-otp` — Verify OTP & activate account (returns JWT)
 - `POST /api/auth/resend-otp` — Resend verification OTP
 - `POST /api/auth/login` — Authenticate user & return JWT
 - `POST /api/auth/forgot-password` — Request password reset OTP
@@ -203,10 +189,10 @@ node scripts/testEndpoints.js
 ### Profile & Resume Hub (`/api/profile`)
 - `GET    /api/profile` — Fetch stored profile, JD, and resume data
 - `PUT    /api/profile` — Update target company, role, JD, and resume text
-- `POST   /api/profile/resume/upload` — Upload PDF resume and extract text
+- `POST   /api/profile/resume/upload` — Upload PDF resume and extract text with Apache PDFBox
 - `DELETE /api/profile/resume` — Clear resume data
 
-### Core Preparation Modules
+### Core Preparation Modules (Powered by Gemini AI)
 - `POST /api/resume/ats` — Run ATS compatibility and keyword scan
 - `POST /api/interview/generate` — Generate 5-category interview Q&A
 - `POST /api/resume-questions/generate` — Generate deep resume project questions
@@ -228,8 +214,7 @@ node scripts/testEndpoints.js
 
 ---
 
-## 🎓 Academic Course Project Details
-
+## 🎓 Project Summary
 - **Project:** NexOffer — AI-Powered Interview Preparation Platform
-- **Architecture:** MERN (MongoDB, Express, React, Node.js)
+- **Stack:** Java 21 LTS, Spring Boot 3.3.4, PostgreSQL, Spring Data JPA, Spring Security (JWT), React 18, Vite 6, Tailwind CSS, Google Gemini API
 - **Tagline:** *Your Next Offer Starts Here.*
